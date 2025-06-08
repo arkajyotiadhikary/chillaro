@@ -1,13 +1,11 @@
 {
   "name": "chillaro",
   "version": "1.0.0",
-  "main": "src/index.ts",
-  "type": "module",
+  "main": "index.js",
   "scripts": {
+    "dev": "nodemon dist/index.js",
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "nodemon --watch 'src/**/*.ts' --exec ts-node src/index.ts",
-    "lint": "eslint 'src/**/*.ts'",
     "watch": "tsc --watch"
   },
   "keywords": [],
@@ -26,6 +24,10 @@
     "npm": "^11.4.1",
     "prettier": "^3.5.3",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "ytmusic-api": "^5.3.0"
   }
 }
