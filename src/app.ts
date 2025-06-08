@@ -1,15 +1,13 @@
 import express from "express";
 import { errorHandler } from "./middlewares/errorHandler";
-import songsRouter from "./rotues/songs";
+import radioRouter from "./routes/radio.routes";
 
 const app = express();
 
 app.use(express.json());
 
-// Routes
-app.use("/api/v1", songsRouter);
+app.use("/api/v1", radioRouter);
 
-// Global error handler (should be after routes)
 app.use(errorHandler);
 
 export default app;
