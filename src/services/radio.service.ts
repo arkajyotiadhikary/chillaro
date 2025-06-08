@@ -1,6 +1,7 @@
-// // This sercie is related to all kind of radio related operations
-
-// import Radio from "../models/radio.model";
+// Models
+import Radio from "../models/Radio";
+import Song, { ISong } from "../models/Song";
+import Playlist, { IPlaylist } from "../models/Playlist";
 
 import { spawn } from "child_process";
 import { Response } from "express";
@@ -19,6 +20,85 @@ class RadioService {
   }
 
   start() {
+    this.playNextSong();
+  }
+
+  // NOTE: in future we will have multiple radio feature where admin can add or remove songs from the radio
+  async getRadio() {
+    const radio = await Radio.find();
+    return radio;
+  }
+
+  async addSongToRadio({
+    name,
+    artist,
+    album,
+    duration,
+    path,
+    thumbnail,
+  }: ISong) {
+    const song = await Song.create({
+      name,
+      artist,
+      album,
+      duration,
+      path,
+      thumbnail,
+    });
+    return song;
+  }
+
+  async addPlaylistToRadio({
+    name,
+    description,
+    thumbnail,
+    songs,
+    radioId,
+  }: IPlaylist) {
+    const playlist = await Playlist.create({
+      name,
+      description,
+      thumbnail,
+      songs,
+      radioId,
+    });
+    return playlist;
+  }
+
+  async getPlaylists(radioId: string) {
+    const playlists = await Playlist.find({ radioId });
+    return playlists;
+  }
+
+  async addSongToPlaylist(playlistId: string, songId: string) {
+    const playlist = await Playlist.findByIdAndUpdate(playlistId, {
+      $push: { songs: songId },
+      new: true,
+    });
+    return playlist;
+  }
+
+  async removeSongFromPlaylist(playlistId: string, songId: string) {
+    const playlist = await Playlist.findByIdAndUpdate(playlistId, {
+      $pull: { songs: songId },
+      new: true,
+    });
+    return playlist;
+  }
+
+  async removeSongFromRadio(id: string) {
+    const song = await Song.findByIdAndDelete(id);
+    return song;
+  }
+
+  async removePlaylistFromRadio(id: string) {
+    const playlist = await Playlist.findByIdAndDelete(id);
+    return playlist;
+  }
+
+  async playPlaylist(playlistId: string) {
+    const playlist = await Playlist.findById(playlistId);
+    this.playlist = playlist?.songs.map((song) => song.toString()) || [];
     this.playNextSong();
   }
 
